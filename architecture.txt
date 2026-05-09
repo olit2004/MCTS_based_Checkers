@@ -1,0 +1,109 @@
+
+    Higher level architecture
+┌──────────────────────────────┐
+│         React Frontend       │
+│  - Board UI                  │
+│  - Game Controls             │
+│  - Move History              │
+│  - AI Visualization          │
+└──────────────┬───────────────┘
+               │ HTTP/WebSocket
+               ▼
+┌──────────────────────────────┐
+│        FastAPI Backend       │
+│  - REST API                  │
+│  - Game Session Manager      │
+│  - AI Request Handler        │
+│  - State Validation          │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│      Checkers Engine         │
+│  - Board Representation      │
+│  - Move Generator            │
+│  - Rules Engine              │
+│  - Win Detection             │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│         MCTS Engine          │
+│  - Selection                 │
+│  - Expansion                 │
+│  - Simulation                │
+│  - Backpropagation           │
+│  - UCT Scoring               │
+└──────────────────────────────┘
+
+
+
+ file structure
+mcts-checkers-ai/
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── hooks/
+│   │   ├── store/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── App.jsx
+│   │
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── engine/
+│   │   ├── mcts/
+│   │   ├── models/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── main.py
+│    
+│
+├── docs/
+├── README.md
+└── docker-compose.yml
+
+
+
+Backend Architecture
+1. API Layer
+
+Handles:
+        new game
+        player move
+        AI move request
+        game state retrieval
+
+Example routes:
+        POST /game/start
+        POST /game/move
+        POST /game/ai-move
+        GET  /game/state
+
+2. Game Engine Layer
+
+This is the core logic.
+
+Responsibilities
+    board initialization
+    legal move generation
+    captures
+    king promotion
+    turn management  
+    terminal state detection
+
+Mcts layer completely separated from the api
+        mcts/
+        ├── node.py
+        ├── tree.py
+        ├── rollout.py
+        ├── selection.py
+        ├── backpropagation.py
+        └── mcts_agent.py    
