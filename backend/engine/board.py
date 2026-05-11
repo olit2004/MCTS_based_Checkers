@@ -1,29 +1,16 @@
 import copy
 
-try:
-    from .constants import (
-        BOARD_SIZE,
-        EMPTY,
-        WHITE_PIECE,
-        BLACK_PIECE,
-        WHITE_KING,
-        BLACK_KING,
-        WHITE_PLAYER,
-        BLACK_PLAYER
-    )
-    from .move import Move
-except (ImportError, ValueError):
-    from constants import (
-        BOARD_SIZE,
-        EMPTY,
-        WHITE_PIECE,
-        BLACK_PIECE,
-        WHITE_KING,
-        BLACK_KING,
-        WHITE_PLAYER,
-        BLACK_PLAYER
-    )
-    from move import Move
+from .constants import (
+    BOARD_SIZE,
+    EMPTY,
+    WHITE_PIECE,
+    BLACK_PIECE,
+    WHITE_KING,
+    BLACK_KING,
+    WHITE_PLAYER,
+    BLACK_PLAYER
+)
+from .move import Move
 
 
 class Board:
