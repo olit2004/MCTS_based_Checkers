@@ -131,5 +131,221 @@ class Board:
 
         return moves
 
+ 
     def generate_capture_moves(self, player):
-        return []
+
+        all_capture_moves = []
+
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+
+                piece = self.get_piece(row, col)
+
+                if piece == EMPTY:
+                    continue
+
+                if piece * player <= 0:
+                    continue
+
+                capture_sequences = self.find_capture_sequences(
+                    row,
+                    col
+                )
+
+                all_capture_moves.extend(capture_sequences)
+
+        return all_capture_moves
+    
+    def find_capture_sequences(
+        self,
+        row,
+        col,
+        visited=None,
+        start=None,
+        captures=None
+    ):
+
+        if visited is None:
+            visited = set()
+
+        if captures is None:
+            captures = []
+
+        if start is None:
+            start = (row, col)
+
+        piece = self.get_piece(row, col)
+
+        directions = []
+
+        if piece == WHITE_PIECE:
+            directions = [(-1, -1), (-1, 1)]
+
+        elif piece == BLACK_PIECE:
+            directions = [(1, -1), (1, 1)]
+
+        elif abs(piece) == 2:
+            directions = [
+                (-1, -1),
+                (-1, 1),
+                (1, -1),
+                (1, 1)
+            ]
+
+        found_capture = False
+
+        all_moves = []
+
+        for dr, dc in directions:
+
+            enemy_row = row + dr
+            enemy_col = col + dc
+
+            landing_row = row + (2 * dr)
+            landing_col = col + (2 * dc)
+
+            if not self.is_inside_board(landing_row, landing_col):
+                continue
+
+            enemy_piece = self.get_piece(enemy_row, enemy_col)
+
+            landing_piece = self.get_piece(landing_row, landing_col)
+
+            if landing_piece != EMPTY:
+                continue
+
+            if enemy_piece == EMPTY:
+                continue
+
+            
+            if enemy_piece * piece > 0:
+                continue
+
+            if (enemy_row, enemy_col) in visited:
+                continue
+
+            found_capture = True
+
+            # Simulate move
+            temp_board = self.clone()
+
+            temp_board.set_piece(row, col, EMPTY)
+            temp_board.set_piece(enemy_row, enemy_col, EMPTY)
+            temp_board.set_piece(landing_row, landing_col, piece)
+
+            new_visited = visited.copy()
+            new_visited.add((enemy_row, enemy_col))
+
+            new_captures = captures + [(enemy_row, enemy_col)]
+
+            future_moves = temp_board.find_capture_sequences(
+                landing_row,
+                landing_col,
+                new_visited,
+                start,
+                new_captures
+            )
+
+            if future_moves:
+                all_moves.extend(future_moves)
+
+            else:
+                all_moves.append(
+                    Move(
+                        start=start,
+                        end=(landing_row, landing_col),
+                        captures=new_captures
+                    )
+                )
+
+        return all_moves
+    
+    def apply_move(self, move):
+
+        start_row, start_col = move.start
+        end_row, end_col = move.end
+
+        piece = self.get_piece(start_row, start_col)
+
+        
+        self.set_piece(start_row, start_col, EMPTY)
+
+        
+        self.set_piece(end_row, end_col, piece)
+
+        
+        for capture_row, capture_col in move.captures:
+            self.set_piece(capture_row, capture_col, EMPTY)
+
+     
+        self.promote_if_needed(end_row, end_col)
+
+        
+        self.current_player *= -1
+
+
+    def promote_if_needed(self, row, col):
+
+        piece = self.get_piece(row, col)
+
+        
+        if piece == WHITE_PIECE and row == 0:
+            self.set_piece(row, col, WHITE_KING)
+
+        
+        elif piece == BLACK_PIECE and row == BOARD_SIZE - 1:
+            self.set_piece(row, col, BLACK_KING)    
+
+
+    def get_all_pieces(self, player):
+
+        pieces = []
+
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+
+                piece = self.get_piece(row, col)
+
+                if piece * player > 0:
+                    pieces.append((row, col))
+
+        return pieces
+
+    def has_moves(self, player):
+        return len(self.generate_moves(player)) > 0
+
+  
+    def is_terminal(self):
+
+        white_exists = len(self.get_all_pieces(WHITE_PLAYER)) > 0
+        black_exists = len(self.get_all_pieces(BLACK_PLAYER)) > 0
+
+        if not white_exists or not black_exists:
+            return True
+
+        if not self.has_moves(WHITE_PLAYER):
+            return True
+
+        if not self.has_moves(BLACK_PLAYER):
+            return True
+
+        return False
+
+    def get_winner(self):
+
+        white_exists = len(self.get_all_pieces(WHITE_PLAYER)) > 0
+        black_exists = len(self.get_all_pieces(BLACK_PLAYER)) > 0
+
+        if not white_exists:
+            return BLACK_PLAYER
+
+        if not black_exists:
+            return WHITE_PLAYER
+
+        if not self.has_moves(WHITE_PLAYER):
+            return BLACK_PLAYER
+
+        if not self.has_moves(BLACK_PLAYER):
+            return WHITE_PLAYER
+
+        return None
