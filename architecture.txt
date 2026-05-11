@@ -107,3 +107,22 @@ Mcts layer completely separated from the api
         ├── selection.py
         ├── backpropagation.py
         └── mcts_agent.py    
+
+
+backend/
+└── app/
+    ├── engine/
+    │   ├── constants.py
+    │   ├── move.py
+    │   ├── board.py
+    │   ├── game.py
+    │   ├── utils.py
+    │   └── tests/
+    │       ├── test_moves.py
+    │       ├── test_captures.py
+    │       └── test_terminal.py
+    │
+    ├── api/
+    │   └── routes.py
+    │
+    └── main.py        
