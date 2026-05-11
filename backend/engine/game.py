@@ -1,5 +1,5 @@
 from .board import Board
-
+from .utils import serialize_board
 
 class Game:
 
@@ -23,7 +23,7 @@ class Game:
     def get_state(self):
 
         return {
-            "board": self.board.board,
+            "board": serialize_board(self.board.board),
             "current_player": self.board.current_player,
             "winner": self.winner,
             "game_over": self.game_over,
