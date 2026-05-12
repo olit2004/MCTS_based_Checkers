@@ -1,6 +1,6 @@
 # MCTS Checkers
 
-A modern, AI‑powered checkers game built with **Monte‑Carlo Tree Search (MCTS)** for the engine and **FastAPI** + **React** for the web interface.
+checkers engine powered by Monte Carlo Tree Search (MCTS), built to explore classical AI search, game-tree exploration, and intelligent decision-making.
 
 ---
 
@@ -8,7 +8,7 @@ A modern, AI‑powered checkers game built with **Monte‑Carlo Tree Search (MCT
 
 ###  Architecture Overview
 
-![Layered Architecture](architeture_diagram.png)
+![Layered Architecture](architecture_diagram.png)
 
 
 
@@ -36,7 +36,7 @@ A modern, AI‑powered checkers game built with **Monte‑Carlo Tree Search (MCT
 
 ---
 
-## 🐳 Docker Development 
+## Docker Development 
 ### Build Images
 ```bash
 # From the project root
@@ -85,21 +85,6 @@ MCTS_checkers/
 - **Frontend** uses React functional components with hooks; styling is pure CSS (no Tailwind).
 - **CORS** is enabled for `http://localhost:3000` in `backend/main.py`.
 
----
 
-## 📦 Dependencies
-### Backend (Python)
-- fastapi
-- uvicorn[standard]
-- pydantic
-- numpy
-- (MCTS implementation is custom)
-
-### Frontend (Node)
-- react
-- react‑dom
-- axios (for API calls)
-
----
 
 
