@@ -3,6 +3,7 @@ import uuid
 
 from ..engine.game import Game
 from .schemas import MoveRequest
+from ..mcts.mcts import MCTS
 
 router = APIRouter()
 
@@ -91,3 +92,40 @@ def get_move_history(game_id: str):
             for move in game.move_history
         ]
     }
+
+
+@router.post("/game/{game_id}/ai-move")
+def ai_move(game_id: str):
+
+    game = get_game_or_404(game_id)
+
+    if game.game_over:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Game is already over"
+        )
+
+    # Search for best move using MCTS
+    mcts = MCTS(iterations=800)
+
+    best_node = mcts.search(game.board)
+
+    if best_node is None:
+
+        raise HTTPException(
+            status_code=500,
+            detail="AI failed to find a move"
+        )
+
+    move = best_node.move
+
+    move_data = {
+        "from": move.start,
+        "to": move.end,
+        "captures": move.captures
+    }
+
+    result = game.make_move(move_data)
+
+    return result

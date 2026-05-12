@@ -1,4 +1,4 @@
-from engine.constants import (
+from ..engine.constants import (
     WHITE_PIECE,
     WHITE_KING,
     BLACK_PIECE,
@@ -37,7 +37,6 @@ def score_move(board, move):
         score += 2
 
     return score
-
 
 
 def select_weighted_move(board, legal_moves):

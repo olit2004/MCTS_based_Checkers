@@ -52,6 +52,11 @@ class Game:
             self.board.current_player
         )
 
+        # JSON sends lists, but Move stores tuples — normalize captures
+        incoming_captures = [
+            tuple(c) for c in move_data.get("captures", [])
+        ]
+
         for move in legal_moves:
 
             if (
@@ -59,7 +64,7 @@ class Game:
                 and
                 move.end == tuple(move_data["to"])
                 and
-                move.captures == move_data.get("captures", [])
+                move.captures == incoming_captures
             ):
                 return move
 
