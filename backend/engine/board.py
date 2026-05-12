@@ -18,6 +18,7 @@ class Board:
     def __init__(self):
         self.board = self.initialize_board()
         self.current_player = WHITE_PLAYER
+        self.moves_since_capture = 0
 
     def initialize_board(self):
         board = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
@@ -260,9 +261,17 @@ class Board:
         
         self.set_piece(end_row, end_col, piece)
 
-        
-        for capture_row, capture_col in move.captures:
-            self.set_piece(capture_row, capture_col, EMPTY)
+
+       
+        if move.captures:
+
+            self.moves_since_capture = 0
+
+            for capture_row, capture_col in move.captures:
+                self.set_piece(capture_row, capture_col, EMPTY)
+
+        else:
+            self.moves_since_capture += 1    
 
      
         self.promote_if_needed(end_row, end_col)
@@ -315,6 +324,10 @@ class Board:
 
         if not self.has_moves(BLACK_PLAYER):
             return True
+        
+        # Draw condition
+        if self.moves_since_capture >= 40:
+            return True
 
         return False
 
@@ -334,5 +347,8 @@ class Board:
 
         if not self.has_moves(BLACK_PLAYER):
             return WHITE_PLAYER
+        # Draw
+        if self.moves_since_capture >= 40:
+            return 0
 
         return None
